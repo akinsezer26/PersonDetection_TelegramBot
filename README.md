@@ -1,10 +1,10 @@
 
 Telegram Bot in /darknet/examples
 
-https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/example/TelegramBot.jpg
-https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/example/day1.jpg
-https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/example/day2.jpg
-https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/example/night.jpg
+https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/examples/TelegramBot.jpg?raw=true
+https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/examples/day1.jpg?raw=true
+https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/examples/day2.jpg?raw=true
+https://github.com/akinsezer26/PersonDetection_TelegramBot/blob/master/examples/night.jpg?raw=true
 
 
 
