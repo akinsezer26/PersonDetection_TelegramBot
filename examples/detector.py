@@ -28,9 +28,10 @@ class yoloHandler:
         return im
 
     def yolo_detect(self,interval):
+        cap = cv2.VideoCapture(0)
         time.sleep(interval)
         try:
-            cap = cv2.VideoCapture(0)
+            #cap = cv2.VideoCapture(0)
             ret,image = cap.read()
 
             image_dn = self.array_to_image(image)

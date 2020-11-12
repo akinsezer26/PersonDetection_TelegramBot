@@ -12,11 +12,11 @@ from subprocess import PIPE
 import os
 import threading
 
-ChatID = 4654 #enter id
+ChatID = #Enter Your Chat ID
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.now()
-interval = 0.3
+interval = 1.0
 
 def calis(update, context):
     global isCalis
@@ -62,7 +62,7 @@ def setInterval(update, context):
         temp = update.message.text.split(' ')[1]
         temp = float(temp)
         interval = temp
-        context.bot.send_message(chat_id=update.message.chat_id,text="interval "+str(interval)+"sn olarak atandı")
+        context.bot.send_message(chat_id=update.message.chat_id,text="0.8s altında interval atanması önerilmez\ninterval "+str(interval)+"sn olarak atandı")
     except:
         context.bot.send_message(chat_id=update.message.chat_id,text="Geçersiz Komut")
 
@@ -86,18 +86,18 @@ def getTemp(update, context):
 import signal
 import psutil
 def shutdown(update, context):
+    context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde kapanacaktır")
     os.system("sudo shutdown -h +1")
     pid = os.getpid()
     ThisSystem = psutil.Process(pid)
     ThisSystem.terminate()
-    #os.system("sudo shutdown now -h")
 
 def restart(update, context):
+    context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde tekrar başlatılacaktır")
     os.system("sudo shutdown -r +1")
     pid = os.getpid()
     ThisSystem = psutil.Process(pid)
     ThisSystem.terminate()
-    #os.system("sudo reboot")
 
 def cik(update, context):
     isCalis = False
