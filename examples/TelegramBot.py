@@ -12,7 +12,7 @@ from subprocess import PIPE
 import os
 import threading
 
-ChatID = -406057035
+ChatID = #your Chat ID
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.now()
