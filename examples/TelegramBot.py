@@ -12,11 +12,11 @@ from subprocess import PIPE
 import os
 import threading
 
-ChatID = #Enter Your Chat ID
+ChatID = -406057035
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.now()
-interval = 1.0
+interval = 0.5
 
 def calis(update, context):
     global isCalis
@@ -37,7 +37,7 @@ def yardim(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def developer(update, context):
-    str = "/manual\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/set_delay\n"+"/set_interval\n"+"/get_delay\n"+"/get_interval\n"+"/sicaklik\n"+"/yeniden_baslat\n"+"/kapat\n"
+    str = "/manual\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/set_delay\n"+"/set_interval\n"+"/get_delay\n"+"/get_interval\n"+"/sicaklik\n"+"/yeniden_baslat\n"+"/kapat\n"+"/rapor\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def getDelay(update, context):
@@ -62,7 +62,7 @@ def setInterval(update, context):
         temp = update.message.text.split(' ')[1]
         temp = float(temp)
         interval = temp
-        context.bot.send_message(chat_id=update.message.chat_id,text="0.8s altında interval atanması önerilmez\ninterval "+str(interval)+"sn olarak atandı")
+        context.bot.send_message(chat_id=update.message.chat_id,text="interval "+str(interval)+"sn olarak atandı")
     except:
         context.bot.send_message(chat_id=update.message.chat_id,text="Geçersiz Komut")
 
@@ -70,9 +70,7 @@ def getServerTime(update, context):
     elapsedtime = datetime.now() - ServerStartDate
     elapsedtime_s = elapsedtime.total_seconds()
     hours = divmod(elapsedtime_s, 3600)[0]
-    minutes = divmod(elapsedtime_s, 60)[0]
-    if(minutes>=60):
-        minutes = minutes-60
+    minutes = divmod(elapsedtime_s, 60)[0]%60
     seconds = divmod(elapsedtime.seconds, 60)[1]
 
     txt = str(round(hours))+' saat '+str(round(minutes))+' dakika '+str(round(seconds))+' saniye '
@@ -85,8 +83,10 @@ def getTemp(update, context):
 
 import signal
 import psutil
+global_updater = None
 def shutdown(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde kapanacaktır")
+    global_updater.stop()
     os.system("sudo shutdown -h +1")
     pid = os.getpid()
     ThisSystem = psutil.Process(pid)
@@ -94,6 +94,7 @@ def shutdown(update, context):
 
 def restart(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde tekrar başlatılacaktır")
+    global_updater.stop()
     os.system("sudo shutdown -r +1")
     pid = os.getpid()
     ThisSystem = psutil.Process(pid)
@@ -110,7 +111,9 @@ def manual(update, context):
 def server():
     bot = telegram.Bot('1330874191:AAHNYFZlEwDqToFMhByYlhNzotPNPczp5Dw')
 
-    updater = Updater('1330874191:AAHNYFZlEwDqToFMhByYlhNzotPNPczp5Dw', use_context=True)
+    global global_updater
+
+    global_updater = updater = Updater('1330874191:AAHNYFZlEwDqToFMhByYlhNzotPNPczp5Dw', use_context=True)
 
     dp = updater.dispatcher
 
@@ -128,7 +131,7 @@ def server():
     dp.add_handler(CommandHandler('kapat',shutdown))
     dp.add_handler(CommandHandler('yeniden_baslat',restart))
     dp.add_handler(CommandHandler('manual',manual))
-    #dp.add_handler(CommandHandler('cik',cik))
+    dp.add_handler(CommandHandler('rapor',report))
 
     updater.start_polling()
 
@@ -136,15 +139,106 @@ def server():
 
     updater.idle()
 
+detectCount = 0
+totalError = 0
+totalBlackScreen = 0
+totalValid = 0
+totalPersonAvg = 0.0
+
+lis = [[] for i in range(25)]
+
+def report(update , context):
+    avg = 0.0
+    sum = 0.0
+    cnt = 0
+    for row in lis:
+        for element in row:
+            if(element[0] == b'person'):
+                cnt+=1
+                sum+=element[1]
+                ort=sum/cnt
+
+    dc = ""
+    if(detectCount<1000):
+        dc = str(detectCount)
+    elif(detectCount>1000 and detectCount<1000000):
+        dc = str(detectCount)[:-3]+"k"
+    else:
+        dc = str(detectCount)[:-6]+"m"
+
+    tv = ""
+    if(totalValid<1000):
+        tv = str(totalValid)
+    elif(totalValid>1000 and totalValid<1000000):
+        tv = str(totalValid)[:-3]+"k"
+    else:
+        tv = str(totalValid)[:-6]+"m"
+
+    te = ""
+    if(totalError<1000):
+        te = str(totalError)
+    elif(totalError>1000 and totalError<1000000):
+        te = str(totalError)[:-3]+"k"
+    else:
+        te = str(totalError)[:-6]+"m"
+
+    tbs = ""
+    if(totalBlackScreen<1000):
+        tbs = str(totalBlackScreen)
+    elif(totalBlackScreen>1000 and totalBlackScreen<1000000):
+        tbs = str(totalBlackScreen)[:-3]+"k"
+    else:
+        tbs = str(totalBlackScreen)[:-6]+"m"
+
+
+    result = "+========= Rapor ========+\n"
+    result +="Toplam Hesaplama= "+ dc+"\n"
+    result +="Toplam Tespit         = "+ tv+"\n"
+    result +="Toplam Hata            = "+ te +"\n"
+    result +="Topl Siyah Ekran      = "+ tbs+"\n"
+    result +="Ort İnsan Olasılık     = "+ "%"+str(totalPersonAvg*100)[:4]+"\n"
+    result +="Son 25 İ. Olasılık     = "+ "%"+str(avg*100)[:4]+"\n"
+    context.bot.send_message(chat_id=update.message.chat_id,text=result)
+
 def loop(bot):
 
     ch = yoloHandler(0)
     time.sleep(5)
     bot.send_message(chat_id=ChatID,text="Sunucu Baslatildi")
+    global lis
+    cnt = 0
+    global detectCount
+    global totalError
+    global totalBlackScreen
+    global totalValid
+    global totalPersonAvg
 
+    personCount = 0
+    personSum = 0.0
     while(True):
         if(isCalis == True):
-            result=ch.yolo_detect(float(interval))
+            result,output=ch.yolo_detect(float(interval))
+            if(cnt == 25):
+                cnt = 0
+            lis[cnt] = output
+            #print(str(lis[cnt])+"\n")
+
+            if(output == "Resim Siyah"):
+                totalBlackScreen+=1
+            elif(output == "Usb Takili Degil"):
+                totalError+=1
+            else:
+                totalValid+=1
+
+            for element in output:
+                if(element[0] == b'person'):
+                    personCount+=1
+                    personSum+=element[1]
+                    totalPersonAvg=personSum/personCount
+
+            cnt+=1
+            detectCount+=1
+
             if(result == True):
                 pilImage = Image.fromarray( cv2.cvtColor(ch.DetectedImage, cv2.COLOR_BGR2RGB) )
                 bio = BytesIO()
