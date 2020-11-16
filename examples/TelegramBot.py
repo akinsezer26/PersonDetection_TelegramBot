@@ -12,7 +12,7 @@ from subprocess import PIPE
 import os
 import threading
 
-ChatID = #your Chat ID
+ChatID = #Enter Your ChatID
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.now()
@@ -86,19 +86,19 @@ import psutil
 global_updater = None
 def shutdown(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde kapanacaktır")
-    global_updater.stop()
     os.system("sudo shutdown -h +1")
-    pid = os.getpid()
-    ThisSystem = psutil.Process(pid)
-    ThisSystem.terminate()
+    global_updater.stop()
+    #pid = os.getpid()
+    #ThisSystem = psutil.Process(pid)
+    #ThisSystem.terminate()
 
 def restart(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde tekrar başlatılacaktır")
-    global_updater.stop()
     os.system("sudo shutdown -r +1")
-    pid = os.getpid()
-    ThisSystem = psutil.Process(pid)
-    ThisSystem.terminate()
+    global_updater.stop()
+    #pid = os.getpid()
+    #ThisSystem = psutil.Process(pid)
+    #ThisSystem.terminate()
 
 def cik(update, context):
     isCalis = False
