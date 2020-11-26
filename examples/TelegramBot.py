@@ -1,5 +1,4 @@
 from telegram.ext import Updater, CommandHandler
-from datetime import datetime
 import telegram
 import time
 import numpy as np
@@ -11,12 +10,25 @@ from subprocess import run
 from subprocess import PIPE
 import os
 import threading
+import datetime
 
-ChatID = #Enter Your ChatID
+ChatID = #Enter Your ID
 delay = 3.0
 isCalis = False
-ServerStartDate = datetime.now()
+ServerStartDate = datetime.datetime.now()
 interval = 0.5
+isDc = False
+dcStartH = 0
+dcStartM = 0
+dcEndH = 0
+dcEndM = 0
+
+def time_in_range(start, end, x):
+    """Return true if x is in the range [start, end]"""
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end
 
 def calis(update, context):
     global isCalis
@@ -27,13 +39,20 @@ def calisma(update, context):
     isCalis = False
 
 def getCalis(update, context):
-    if(isCalis==True):
-        context.bot.send_message(chat_id=update.message.chat_id,text="Calisiyor")
+    duzC = ""
+    if(isDc == True):
+        duzC = "Acik\n"
     else:
-        context.bot.send_message(chat_id=update.message.chat_id,text="Calismiyor")
+        duzc = "Kapali\n"
+    if(isCalis==True):
+        str_ = "Calisiyor\n" + "Duzenli Calisma: " + duzC + str(dcStartH) +":"+ str(dcStartM) + " " + str(dcEndH) + ":" + str(dcEndM)
+        context.bot.send_message(chat_id=update.message.chat_id,text=str_)
+    else:
+        str_ = "Calismiyor\n" + "Duzenli Calisma: " + duzC + str(dcStartH) +":"+ str(dcStartM) + " " + str(dcEndH) + ":" + str(dcEndM)
+        context.bot.send_message(chat_id=update.message.chat_id,text=str_)
 
 def yardim(update, context):
-    str = "/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/gelismis\n"
+    str = "/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/duzenli_calis\n"+"/duzenli_calisma\n"+"/duzenli_calismayi_ayarla\n"+"/gelismis\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def developer(update, context):
@@ -45,6 +64,36 @@ def getDelay(update, context):
 
 def getInterval(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text=str(interval))
+
+def setDc(update, context):
+    try:
+        global dcStartH
+        global dcStartM
+        global dcEndH
+        global dcEndM
+        stra =  update.message.text.split(' ')[1]
+        times = stra.split(':')
+
+        start = datetime.time(int(times[0]),int(times[1]),0)
+        end = datetime.time(int(times[2]),int(times[3]),0)
+
+        dcStartH = times[0]
+        dcStartM = times[1]
+        dcEndH   = times[2]
+        dcEndM   = times[3]
+        context.bot.send_message(chat_id=update.message.chat_id,text="Atama Başarılı")
+    except:
+        context.bot.send_message(chat_id=update.message.chat_id,text="Geçersiz Komut")
+
+def Dc(update, context):
+    global isDc
+    isDc = True
+
+def Dcn(update, context):
+    global isDc
+    global isCalis
+    isDc = False
+    isCalis = False
 
 def setDelay(update, context):
     try:
@@ -67,7 +116,7 @@ def setInterval(update, context):
         context.bot.send_message(chat_id=update.message.chat_id,text="Geçersiz Komut")
 
 def getServerTime(update, context):
-    elapsedtime = datetime.now() - ServerStartDate
+    elapsedtime = datetime.datetime.now() - ServerStartDate
     elapsedtime_s = elapsedtime.total_seconds()
     hours = divmod(elapsedtime_s, 3600)[0]
     minutes = divmod(elapsedtime_s, 60)[0]%60
@@ -132,6 +181,9 @@ def server():
     dp.add_handler(CommandHandler('yeniden_baslat',restart))
     dp.add_handler(CommandHandler('manual',manual))
     dp.add_handler(CommandHandler('rapor',report))
+    dp.add_handler(CommandHandler('duzenli_calismayi_ayarla',setDc))
+    dp.add_handler(CommandHandler('duzenli_calis',Dc))
+    dp.add_handler(CommandHandler('duzenli_calisma',Dcn))
 
     updater.start_polling()
 
@@ -212,10 +264,23 @@ def loop(bot):
     global totalBlackScreen
     global totalValid
     global totalPersonAvg
+    global isCalis
 
     personCount = 0
     personSum = 0.0
     while(True):
+        dt = datetime.datetime.now()
+        dtH = dt.hour
+        dtM = dt.minute
+
+        start = datetime.time(int(dcStartH), int(dcStartM), 0)
+        end = datetime.time(int(dcEndH), int(dcEndM), 0)
+
+        if(isDc == True and time_in_range(start,end,datetime.time(dtH, dtM, 0)) ):
+            isCalis = True
+        elif(isDc == True and not time_in_range(start,end,datetime.time(dtH, dtM, 0))):
+            isCalis = False
+
         if(isCalis == True):
             result,output=ch.yolo_detect(float(interval))
             if(cnt == 25):
