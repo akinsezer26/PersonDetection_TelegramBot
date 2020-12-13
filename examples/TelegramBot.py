@@ -12,7 +12,7 @@ import os
 import threading
 import datetime
 
-ChatID = #Enter Your ID
+ChatID = #CHAT ID
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.datetime.now()
@@ -295,9 +295,11 @@ def loop(bot):
             else:
                 totalValid+=1
 
+            currentProb = 0.0
             for element in output:
                 if(element[0] == b'person'):
                     personCount+=1
+                    currentProb = element[1]
                     personSum+=element[1]
                     totalPersonAvg=personSum/personCount
 
@@ -311,7 +313,7 @@ def loop(bot):
                 pilImage.save(bio, 'JPEG')
                 bio.seek(0)
 
-                bot.send_photo(chat_id=ChatID, photo=bio, caption="Kameralar")
+                bot.send_photo(chat_id=ChatID, photo=bio, caption="Insan : %" + str(currentProb*100)[:4])
                 time.sleep(float(delay))
         else:
             time.sleep(1)
