@@ -41,12 +41,13 @@ class yoloHandler:
             if(cv2.countNonZero(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))==0):
                 return False, "Resim Siyah"
             else:
-                cv2.rectangle(image, (0,60), (50, 126), (0,0,0),-1)
-                cv2.rectangle(image, (50,60), (100, 115), (0,0,0),-1)   #CAM1
-                cv2.rectangle(image, (100,60), (150, 100), (0,0,0),-1)
-                cv2.rectangle(image, (150,60), (210, 90), (0,0,0),-1)
+                image_copy = image.copy()
+                cv2.rectangle(image_copy, (0,0), (50, 66), (0,0,0),-1)
+                cv2.rectangle(image_copy, (50,0), (100, 55), (0,0,0),-1)   #CAM1
+                cv2.rectangle(image_copy, (100,0), (150, 40), (0,0,0),-1)
+                cv2.rectangle(image_copy, (150,0), (210, 30), (0,0,0),-1)
 
-                image_dn = self.array_to_image(image)
+                image_dn = self.array_to_image(image_copy)
                 dn.rgbgr_image(image_dn)
 
                 hour = datetime.datetime.now().hour
