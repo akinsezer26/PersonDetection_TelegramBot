@@ -47,6 +47,8 @@ class yoloHandler:
                 cv2.rectangle(image_copy, (100,0), (150, 40), (0,0,0),-1)
                 cv2.rectangle(image_copy, (150,0), (210, 30), (0,0,0),-1)
 
+                cv2.rectangle(image_copy, (550,120), (600, 185), (0,0,0),-1)  #CAM2
+
                 image_dn = self.array_to_image(image_copy)
                 dn.rgbgr_image(image_dn)
 

@@ -12,7 +12,7 @@ import os
 import threading
 import datetime
 
-ChatID = #CHAT ID
+ChatID = #Chat ID
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.datetime.now()
