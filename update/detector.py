@@ -42,13 +42,19 @@ class yoloHandler:
                 return False, "Resim Siyah"
             else:
                 image_copy = image.copy()
-                cv2.rectangle(image_copy, (0,0), (50, 66), (0,0,0),-1)
-                cv2.rectangle(image_copy, (50,0), (100, 55), (0,0,0),-1)   #CAM1
-                cv2.rectangle(image_copy, (100,0), (150, 40), (0,0,0),-1)
-                cv2.rectangle(image_copy, (150,0), (210, 30), (0,0,0),-1)
+                ##################################### Masking ############################################
+                marginx = 215
+                marginy = 0
 
-                cv2.rectangle(image_copy, (550,120), (600, 185), (0,0,0),-1)  #CAM2
+                cv2.rectangle(image_copy, (0+marginx,0+marginy), (50+marginx, 76+marginy), (255,0,255),-1)
+                cv2.rectangle(image_copy, (50+marginx,0+marginy), (100+marginx, 65+marginy), (255,0,255),-1)   #CAM1
+                cv2.rectangle(image_copy, (100+marginx,0+marginy), (150+marginx, 50+marginy), (255,0,255),-1)
+                cv2.rectangle(image_copy, (150+marginx,0+marginy), (210+marginx, 40+marginy), (255,0,255),-1)
 
+                cv2.rectangle(image_copy, (140,420), (212, 480), (255,0,255),-1)  #CAM7
+
+                ##################################### Masking ############################################
+                
                 image_dn = self.array_to_image(image_copy)
                 dn.rgbgr_image(image_dn)
 
@@ -59,9 +65,9 @@ class yoloHandler:
                 #print("inceleniyor")
 
                 if(hour > 7 and hour < 18):
-                    r = dn.detect(self.net, self.meta, image_dn, 0.30)
+                    r = dn.detect(self.net, self.meta, image_dn, 0.35)
                 else:
-                    r = dn.detect(self.net, self.meta, image_dn, 0.25)
+                    r = dn.detect(self.net, self.meta, image_dn, 0.30)
 
                 length = len(r)
 
