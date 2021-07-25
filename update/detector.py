@@ -1,5 +1,5 @@
 import sys, os
-path = "/home/akin/Desktop/masaustu/darknet/"
+path = "/home/pi/darknet/"
 sys.path.insert(1, path + 'python')
 
 import darknet as dn
