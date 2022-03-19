@@ -238,6 +238,15 @@ def report(update , context):
     result +="Son 25 İ. Olasılık     = "+ "%"+str(avg*100)[:4]+"\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=result)
 
+daily_report_flag = 0
+def dailyReport(chat_id):
+    now = datetime.datetime.now()
+    if(now.hour == '0' and now.minute == '30' and daily_report_flag== 0):
+         bot.send_message(chat_id=update.message.chat_id, text='Sunucu Ayakta')
+         daily_report_flag = 1
+     else:
+         daily_report_flag = 0
+
 def loop(bot, ChatID):
 
     ch = yoloHandler(0)
@@ -257,6 +266,8 @@ def loop(bot, ChatID):
         dt = datetime.datetime.now()
         dtH = dt.hour
         dtM = dt.minute
+
+        dailyReport(ChatID)
 
         start = datetime.time(int(dcStartH), int(dcStartM), 0)
         end = datetime.time(int(dcEndH), int(dcEndM), 0)
