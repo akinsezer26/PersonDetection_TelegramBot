@@ -241,11 +241,11 @@ def report(update , context):
 daily_report_flag = 0
 def dailyReport(bot, chat_id):
     now = datetime.datetime.now()
-    if(now.hour == 1 and now.minute == 0 and daily_report_flag == 0):
+    global daily_report_flag
+    if(now.hour == 1 and now.minute == 11 and daily_report_flag == 0):
         bot.send_message(chat_id=chat_id, text='Sunucu Ayakta')
-        global daily_report_flag
         daily_report_flag = 1
-    else:
+    elif(now.hour != 1 and now.minute != 0 and daily_report_flag == 1):
         daily_report_flag = 0
 
 def loop(bot, ChatID):
