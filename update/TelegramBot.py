@@ -144,7 +144,7 @@ def restart(update, context):
 
 def manual(update, context):
     str = "delay    : Görüntü gönderme aralığı\ninterval : tespit etme aralığı"
-    context.bot.send_message(chat_id=update.message.chat_id,text=str)
+    context.bot.send_message(chat_id=update.message.chat_id,text=str, disable_notification = true)
 
 def server(bot, updater, ChatID):
 
