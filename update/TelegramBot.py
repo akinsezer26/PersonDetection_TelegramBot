@@ -242,10 +242,10 @@ daily_report_flag = 0
 def dailyReport(chat_id):
     now = datetime.datetime.now()
     if(now.hour == '0' and now.minute == '30' and daily_report_flag== 0):
-         bot.send_message(chat_id=update.message.chat_id, text='Sunucu Ayakta')
-         daily_report_flag = 1
-     else:
-         daily_report_flag = 0
+        bot.send_message(chat_id=update.message.chat_id, text='Sunucu Ayakta')
+        daily_report_flag = 1
+    else:
+        daily_report_flag = 0
 
 def loop(bot, ChatID):
 
