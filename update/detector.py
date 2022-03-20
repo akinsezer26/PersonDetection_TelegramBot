@@ -51,7 +51,7 @@ class yoloHandler:
                 cv2.rectangle(image_copy, (100+marginx,0+marginy), (150+marginx, 50+marginy), (255,0,255),-1)
                 cv2.rectangle(image_copy, (150+marginx,0+marginy), (210+marginx, 40+marginy), (255,0,255),-1)
 
-                cv2.rectangle(image_copy, (315+marginx,20+marginy), (360+marginx, 75+marginy), (255,0,255),-1) #CAM3
+                cv2.rectangle(image_copy, (315+marginx,0+marginy), (360+marginx, 75+marginy), (255,0,255),-1) #CAM3 NEW
                 
                 cv2.rectangle(image_copy, (140,420), (212, 480), (255,0,255),-1)  #CAM7
 
