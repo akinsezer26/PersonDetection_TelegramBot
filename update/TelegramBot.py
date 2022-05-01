@@ -22,6 +22,10 @@ dcStartM = 0
 dcEndH = 0
 dcEndM = 0
 
+def version(update, context):
+    version = 'Beta V1.0.0'
+    context.bot.send_message(chat_id=update.message.chat_id,text=version)
+
 def time_in_range(start, end, x):
     """Return true if x is in the range [start, end]"""
     if start <= end:
@@ -51,7 +55,7 @@ def getCalis(update, context):
         context.bot.send_message(chat_id=update.message.chat_id,text=str_)
 
 def yardim(update, context):
-    str = "/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/duzenli_calis\n"+"/duzenli_calisma\n"+"/duzenli_calismayi_ayarla\n"+"/gelismis\n"
+    str = "/versiyon\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/duzenli_calis\n"+"/duzenli_calisma\n"+"/duzenli_calismayi_ayarla\n"+"/gelismis\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def developer(update, context):
@@ -170,6 +174,7 @@ def server(bot, updater, ChatID):
     dp.add_handler(CommandHandler('duzenli_calismayi_ayarla',setDc))
     dp.add_handler(CommandHandler('duzenli_calis',Dc))
     dp.add_handler(CommandHandler('duzenli_calisma',Dcn))
+    dp.add_handler(CommandHandler('versiyon',version))
 
     updater.start_polling()
 
