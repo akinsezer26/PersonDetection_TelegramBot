@@ -17,6 +17,8 @@ class yoloHandler:
         self.net = dn.load_net(bytes(path + "cfg/yolov3-tiny.cfg", encoding='utf-8'), bytes(path + "/yolov3-tiny.weights", encoding='utf-8'), 0)
         self.meta = dn.load_meta(bytes(path + "cfg/coco.data", encoding='utf-8'))
         self.cap = cv2.VideoCapture(source)
+        self.cap.set(3, 1920)
+        self.cap.set(4, 1080)
 
     def array_to_image(self, arr):
         arr = arr.transpose(2,0,1)
@@ -43,17 +45,17 @@ class yoloHandler:
             else:
                 image_copy = image.copy()
                 ##################################### Masking ############################################
-                marginx = 215
-                marginy = 0
+                #marginx = 215
+                #marginy = 0
 
-                cv2.rectangle(image_copy, (0+marginx,0+marginy), (50+marginx, 76+marginy), (255,0,255),-1)
-                cv2.rectangle(image_copy, (50+marginx,0+marginy), (100+marginx, 65+marginy), (255,0,255),-1)   #CAM1
-                cv2.rectangle(image_copy, (100+marginx,0+marginy), (150+marginx, 50+marginy), (255,0,255),-1)
-                cv2.rectangle(image_copy, (150+marginx,0+marginy), (210+marginx, 40+marginy), (255,0,255),-1)
+                #cv2.rectangle(image_copy, (0+marginx,0+marginy), (50+marginx, 76+marginy), (255,0,255),-1)
+                #cv2.rectangle(image_copy, (50+marginx,0+marginy), (100+marginx, 65+marginy), (255,0,255),-1)   #CAM1
+                #cv2.rectangle(image_copy, (100+marginx,0+marginy), (150+marginx, 50+marginy), (255,0,255),-1)
+                #cv2.rectangle(image_copy, (150+marginx,0+marginy), (210+marginx, 40+marginy), (255,0,255),-1)
 
-                cv2.rectangle(image_copy, (315+marginx,0+marginy), (360+marginx, 75+marginy), (255,0,255),-1) #CAM3 NEW
+                #cv2.rectangle(image_copy, (315+marginx,0+marginy), (360+marginx, 75+marginy), (255,0,255),-1) #CAM3 NEW
                 
-                cv2.rectangle(image_copy, (140,420), (212, 480), (255,0,255),-1)  #CAM7
+                #cv2.rectangle(image_copy, (140,420), (212, 480), (255,0,255),-1)  #CAM7
 
                 ##################################### Masking ############################################
                 
