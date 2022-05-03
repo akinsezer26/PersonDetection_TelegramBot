@@ -71,7 +71,7 @@ class yoloHandler:
                 if(hour > 7 and hour < 18):
                     r = dn.detect(self.net, self.meta, image_dn, 0.42)
                 else:
-                    r = dn.detect(self.net, self.meta, image_dn, 0.37)
+                    r = dn.detect(self.net, self.meta, image_dn, 0.3)
 
                 length = len(r)
 
