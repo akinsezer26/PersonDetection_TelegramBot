@@ -88,9 +88,9 @@ class yoloHandler:
                 #print("inceleniyor")
 
                 if(hour > 7 and hour < 18):
-                    r = dn.detect(self.net, self.meta, image_dn, 0.42)
+                    r = dn.detect(self.net, self.meta, image_dn, 0.55)
                 else:
-                    r = dn.detect(self.net, self.meta, image_dn, 0.3)
+                    r = dn.detect(self.net, self.meta, image_dn, 0.45)
 
                 length = len(r)
 
