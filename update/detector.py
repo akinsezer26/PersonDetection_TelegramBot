@@ -65,7 +65,7 @@ class yoloHandler:
                 image_copy = image.copy()
                 
                 ##################################### Masking ############################################
-                cv2.rectangle(image_copy, 600,300), (650, 370), (255,0,255),-1)
+                cv2.rectangle(image_copy, (600,300), (650, 370), (255,0,255),-1)
                 #marginx = 215
                 #marginy = 0
 
