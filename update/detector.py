@@ -40,6 +40,25 @@ class yoloHandler:
 
             ret,image = self.cap.read()
 
+            cam1 = image[0:360, 0:640]
+            cam2 = image[0:360, 640:1280]
+            cam3 = image[0:360, 1280:1920]
+
+            cam4 = image[360:720, 0:640]
+            cam5 = image[360:720, 640:1280]
+            cam6 = image[360:720, 1280:1920]
+
+            cam7 = image[720:1080, 0:640]
+            cam8 = image[720:1080, 640:1280]
+
+            combined_images = np.zeros((720,1280,3), np.uint8)
+            combined_images[0:360, 0:640] = cam1
+            combined_images[0:360, 640:1280] = cam2
+            combined_images[360:720, 0:640] = cam4
+            combined_images[360:720, 640:1280] = cam6
+            
+            image = combined_images
+            
             if(cv2.countNonZero(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))==0):
                 return False, "Resim Siyah"
             else:
