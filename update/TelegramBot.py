@@ -24,7 +24,7 @@ dcEndH = 0
 dcEndM = 0
 
 GPIO.setmode(GPIO.BOARD)
-led = 2
+led = 3
 GPIO.setup(led, GPIO.OUT)
 
 def alarmkapat(update, context):
@@ -336,3 +336,4 @@ def loop(bot, ChatID):
 
 if __name__ == '__main__':
     server()
+    GPIO.cleanup()
