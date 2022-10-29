@@ -22,6 +22,8 @@ dcStartH = 0
 dcStartM = 0
 dcEndH = 0
 dcEndM = 0
+
+GPIO.setmode(GPIO.BOARD)
 led = 2
 GPIO.setup(led, GPIO.OUT)
 
