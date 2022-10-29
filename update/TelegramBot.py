@@ -11,6 +11,7 @@ from subprocess import PIPE
 import os
 import threading
 import datetime
+import RPi.GPIO as GPIO
 
 delay = 3.0
 isCalis = False
@@ -21,6 +22,14 @@ dcStartH = 0
 dcStartM = 0
 dcEndH = 0
 dcEndM = 0
+led = 2
+GPIO.setup(led, GPIO.OUT)
+
+def alarmkapat(update, context):
+    GPIO.output(led, GPIO.LOW)
+
+def alarmac(update, context):
+    GPIO.output(led, GPIO.HIGH)
 
 def version(update, context):
     version = 'Beta V1.0.0'
@@ -175,6 +184,8 @@ def server(bot, updater, ChatID):
     dp.add_handler(CommandHandler('duzenli_calis',Dc))
     dp.add_handler(CommandHandler('duzenli_calisma',Dcn))
     dp.add_handler(CommandHandler('versiyon',version))
+    dp.add_handler(CommandHandler('alarmac',alarmac))
+    dp.add_handler(CommandHandler('alarmkapat',alarmkapat))
 
     updater.start_polling()
 
