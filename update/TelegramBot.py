@@ -29,9 +29,11 @@ GPIO.setup(led, GPIO.OUT)
 
 def alarmkapat(update, context):
     GPIO.output(led, GPIO.LOW)
+    context.bot.send_message(chat_id=update.message.chat_id,text='Alarm kapatiliyor')
 
 def alarmac(update, context):
     GPIO.output(led, GPIO.HIGH)
+    context.bot.send_message(chat_id=update.message.chat_id,text='Alarm aciliyor')
 
 def version(update, context):
     version = 'Beta V1.0.0'
