@@ -34,6 +34,8 @@ def alarmkapat(update, context):
 def alarmac(update, context):
     GPIO.output(led, GPIO.HIGH)
     context.bot.send_message(chat_id=update.message.chat_id,text='Alarm aciliyor')
+    time.sleep(5)
+    GPIO.output(led, GPIO.LOW)
 
 def version(update, context):
     version = 'Beta V1.0.0'
