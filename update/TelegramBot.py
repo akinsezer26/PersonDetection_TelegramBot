@@ -24,7 +24,7 @@ dcEndH = 0
 dcEndM = 0
 
 GPIO.setmode(GPIO.BOARD)
-led = 3
+led = 7
 GPIO.setup(led, GPIO.OUT)
 
 def alarmkapat(update, context):
