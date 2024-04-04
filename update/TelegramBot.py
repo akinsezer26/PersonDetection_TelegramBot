@@ -23,22 +23,22 @@ dcStartM = 0
 dcEndH = 0
 dcEndM = 0
 
-GPIO.setmode(GPIO.BOARD)
-led = 7
-GPIO.setup(led, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+alarm = 18
+GPIO.setup(alarm, GPIO.OUT)
 
 def alarmkapat(update, context):
-    GPIO.output(led, GPIO.LOW)
+    GPIO.output(alarm, GPIO.LOW)
     context.bot.send_message(chat_id=update.message.chat_id,text='Alarm kapatiliyor')
 
 def alarmac(update, context):
-    GPIO.output(led, GPIO.HIGH)
+    GPIO.output(alarm, GPIO.HIGH)
     context.bot.send_message(chat_id=update.message.chat_id,text='Alarm aciliyor')
     time.sleep(30)
-    GPIO.output(led, GPIO.LOW)
+    GPIO.output(alarm, GPIO.LOW)
 
 def version(update, context):
-    version = 'Beta V1.0.0'
+    version = 'Jetson Nano Beta V1.0.0'
     context.bot.send_message(chat_id=update.message.chat_id,text=version)
 
 def time_in_range(start, end, x):
@@ -74,7 +74,7 @@ def yardim(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def developer(update, context):
-    str = "/manual\n"+"/update\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/set_delay\n"+"/set_interval\n"+"/get_delay\n"+"/get_interval\n"+"/sicaklik\n"+"/yeniden_baslat\n"+"/kapat\n"+"/rapor\n"
+    str = "/manual\n"+"/update\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/set_delay\n"+"/set_interval\n"+"/get_delay\n"+"/get_interval\n"+"/sicaklik\n"+"/yeniden_baslat\n"+"/kapat\n"+"/rapor\n"+"/get_Telegram_Bot\n"+"/get_detector\n"+"/get_init\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def getDelay(update, context):
@@ -315,7 +315,7 @@ def loop(bot, ChatID):
 
             currentProb = 0.0
             for element in output:
-                if(element[0] == b'person'):
+                if(element[0] == 'person'):
                     personCount+=1
                     currentProb = element[1]
                     personSum+=element[1]
