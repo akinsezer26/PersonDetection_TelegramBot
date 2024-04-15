@@ -45,6 +45,8 @@ class yoloHandler:
             combined_images[360:720, 640:1280] = cam6
             
             image = combined_images
+            cv2.rectangle(image, (630, 320), (955, 535), (255, 255, 255), -1)
+            cv2.rectangle(image, (800, 170), (955, 400), (255, 255, 255), -1)
             
             if(cv2.countNonZero(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))==0):
                 return False, "Resim Siyah"
