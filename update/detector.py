@@ -21,8 +21,8 @@ class yoloHandler:
         time.sleep(interval)
 
         try:
-            for i in range(24):
-                self.cap.grab()
+            #for i in range(24):
+            #    self.cap.grab()
 
             ret,image = self.cap.read()
 
