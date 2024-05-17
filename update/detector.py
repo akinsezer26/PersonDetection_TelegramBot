@@ -14,7 +14,7 @@ class yoloHandler:
         self.cap.set(3, 1920)
         self.cap.set(4, 1080)
         self.model = yolov5.load('/home/akin/guvenlik/yolov5s.pt')
-        self.model.conf = 0.4
+        self.model.conf = 0.55
 
     def yolo_detect(self,interval):
 
