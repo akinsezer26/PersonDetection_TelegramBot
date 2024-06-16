@@ -14,7 +14,9 @@ class yoloHandler:
         self.cap.set(3, 1920)
         self.cap.set(4, 1080)
         self.model = yolov5.load('/home/akin/guvenlik/yolov5s.pt')
-        self.model.conf = 0.55
+        self.model.conf = 0.7
+        self.currentCam = 0
+        self.camCount = 4
 
     def yolo_detect(self,interval):
 
@@ -26,28 +28,17 @@ class yoloHandler:
 
             ret,image = self.cap.read()
 
-            cam1 = image[0:360, 0:640]
-            cam2 = image[0:360, 640:1280]
-            cam3 = image[0:360, 1280:1920]
+            if(self.currentCam == 0):
+                image = image[0:360, 0:640]
+            elif(self.currentCam == 1):
+                image = image[0:360, 640:1280]
+            elif(self.currentCam == 2):
+                image = image[360:720, 0:640]
+            elif(self.currentCam == 3):
+                image = image[360:720, 1280:1920]
 
-            cam4 = image[360:720, 0:640]
-            cam5 = image[360:720, 640:1280]
-            cam6 = image[360:720, 1280:1920]
+            self.currentCam = (self.currentCam + 1) % self.camCount
 
-            cam7 = image[720:1080, 0:640]
-            cam8 = image[720:1080, 640:1280]
-
-	    #cam1, cam2, cam4, cam6
-            combined_images = np.zeros((720,1280,3), np.uint8)
-            combined_images[0:360, 0:640] = cam1
-            combined_images[0:360, 640:1280] = cam2
-            combined_images[360:720, 0:640] = cam4
-            combined_images[360:720, 640:1280] = cam6
-            
-            image = combined_images
-            cv2.rectangle(image, (416, 211), (630, 353), (255, 255, 255), -1)
-            cv2.rectangle(image, (528, 112), (630, 264), (255, 255, 255), -1)
-            
             if(cv2.countNonZero(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))==0):
                 return False, "Resim Siyah"
             else:
