@@ -70,7 +70,7 @@ def getCalis(update, context):
         context.bot.send_message(chat_id=update.message.chat_id,text=str_)
 
 def yardim(update, context):
-    str = "/versiyon\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/duzenli_calis\n"+"/duzenli_calisma\n"+"/duzenli_calismayi_ayarla\n"+"/gelismis\n"
+    str = "/versiyon\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/duzenli_calis\n"+"/duzenli_calisma\n"+"/duzenli_calismayi_ayarla\n"+"/alarmac\n"+"/alarmkapat\n"+"/gelismis\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def developer(update, context):
