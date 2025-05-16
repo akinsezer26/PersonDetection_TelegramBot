@@ -12,6 +12,7 @@ import os
 import threading
 import datetime
 import RPi.GPIO as GPIO
+import subprocess
 
 delay = 3.0
 isCalis = False
@@ -26,6 +27,18 @@ dcEndM = 0
 GPIO.setmode(GPIO.BCM)
 alarm = 18
 GPIO.setup(alarm, GPIO.OUT)
+
+def run_command(command: str) -> str:
+    try:
+        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        return f"Error: {e.stderr.strip()}"
+
+def komutcalistir(update, context):
+    komut =  update.message.text.split(' ')[1]
+    result = run_command(komut)
+    context.bot.send_message(chat_id=update.message.chat_id,text=result)
 
 def alarmkapat(update, context):
     GPIO.output(alarm, GPIO.LOW)
@@ -196,6 +209,7 @@ def server(bot, updater, ChatID):
     dp.add_handler(CommandHandler('alarmac',alarmac))
     dp.add_handler(CommandHandler('alarmkapat',alarmkapat))
     dp.add_handler(CommandHandler('get_error_log',getErrorLog))
+    dp.add_handler(CommandHandler('komutcalistir',komutcalistir))
     
     updater.start_polling()
 
