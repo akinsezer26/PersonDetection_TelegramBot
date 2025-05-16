@@ -87,7 +87,7 @@ def yardim(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def developer(update, context):
-    str = "/manual\n"+"/update\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/set_delay\n"+"/set_interval\n"+"/get_delay\n"+"/get_interval\n"+"/sicaklik\n"+"/yeniden_baslat\n"+"/kapat\n"+"/rapor\n"+"/get_Telegram_Bot\n"+"/get_detector\n"+"/get_init\n"+"/get_error_log\n"
+    str = "/manual\n"+"/update\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/set_delay\n"+"/set_interval\n"+"/get_delay\n"+"/get_interval\n"+"/sicaklik\n"+"/yeniden_baslat\n"+"/kapat\n"+"/rapor\n"+"/get_Telegram_Bot\n"+"/get_detector\n"+"/get_init\n"+"/get_error_log\n"+"/komutcalistir\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def getDelay(update, context):
