@@ -33,17 +33,19 @@ def run_command(command: str) -> str:
     try:
         result = subprocess.run(
             ["/bin/bash", "-c", command],
-            capture_output=True,
-            text=True
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True
         )
         output = result.stdout.strip()
         error = result.stderr.strip()
+
         if result.returncode != 0:
-            return f"Hata kodu {result.returncode}:\n{error or '(No stderr)'}"
+            return f"Hata kodu {result.returncode}:\n{error or '(stderr boş)'}"
         return output or "(Hiçbir çıktı yok)"
     except Exception as e:
         return f"Beklenmeyen hata: {str(e)}"
-
+        
 def komutcalistir(update, context):
     text = update.message.text
 
