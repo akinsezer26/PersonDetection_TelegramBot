@@ -13,6 +13,7 @@ import threading
 import datetime
 import RPi.GPIO as GPIO
 import subprocess
+import shlex
 
 delay = 3.0
 isCalis = False
@@ -36,9 +37,17 @@ def run_command(command: str) -> str:
         return f"Error: {e.stderr.strip()}"
 
 def komutcalistir(update, context):
-    komut =  update.message.text.split(' ')[1]
-    result = run_command(komut)
-    context.bot.send_message(chat_id=update.message.chat_id,text=result)
+    try:
+        text = update.message.text
+        parts = shlex.split(text)
+        if len(parts) < 2:
+            context.bot.send_message(chat_id=update.message.chat_id, text="Lütfen bir komut girin.")
+            return
+        komut = parts[1]
+        result = run_command(komut)
+        context.bot.send_message(chat_id=update.message.chat_id, text=result)
+    except ValueError as ve:
+        context.bot.send_message(chat_id=update.message.chat_id, text=f"Komut ayrıştırılamadı: {ve}")
 
 def alarmkapat(update, context):
     GPIO.output(alarm, GPIO.LOW)
