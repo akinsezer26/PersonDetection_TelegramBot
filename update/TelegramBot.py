@@ -32,22 +32,35 @@ GPIO.setup(alarm, GPIO.OUT)
 def run_command(command: str) -> str:
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-        return result.stdout.strip()
+        return result.stdout.strip() or "(No output)"
     except subprocess.CalledProcessError as e:
-        return f"Error: {e.stderr.strip()}"
+        return f"Hata: {e.stderr.strip() or str(e)}"
 
 def komutcalistir(update, context):
-    try:
-        text = update.message.text
-        parts = shlex.split(text)
-        if len(parts) < 2:
-            context.bot.send_message(chat_id=update.message.chat_id, text="Lütfen bir komut girin.")
-            return
-        komut = parts[1]
-        result = run_command(komut)
-        context.bot.send_message(chat_id=update.message.chat_id, text=result)
-    except ValueError as ve:
-        context.bot.send_message(chat_id=update.message.chat_id, text=f"Komut ayrıştırılamadı: {ve}")
+    text = update.message.text
+
+    if text.startswith("/komutcalistir"):
+        # Remove the command part and strip spaces
+        command_part = text[len("/komutcalistir"):].strip()
+
+        try:
+            command_tokens = shlex.split(command_part)
+            command = ' '.join(command_tokens)
+
+            if not command:
+                context.bot.send_message(chat_id=update.effective_chat.id, text="Komut bulunamadı.")
+                return
+
+            # Send back the parsed command as debug
+            context.bot.send_message(chat_id=update.effective_chat.id, text=f"Çalıştırılıyor: `{command}`", parse_mode='Markdown')
+
+            result = run_command(command)
+            context.bot.send_message(chat_id=update.effective_chat.id, text=result)
+
+        except ValueError as e:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=f"Komut ayrıştırma hatası: {e}")
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Komut tanınmadı.")
 
 def alarmkapat(update, context):
     GPIO.output(alarm, GPIO.LOW)
