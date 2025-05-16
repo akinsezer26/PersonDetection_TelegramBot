@@ -31,10 +31,18 @@ GPIO.setup(alarm, GPIO.OUT)
 
 def run_command(command: str) -> str:
     try:
-        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-        return result.stdout.strip() or "(No output)"
-    except subprocess.CalledProcessError as e:
-        return f"Hata: {e.stderr.strip() or str(e)}"
+        result = subprocess.run(
+            ["/bin/bash", "-c", command],
+            capture_output=True,
+            text=True
+        )
+        output = result.stdout.strip()
+        error = result.stderr.strip()
+        if result.returncode != 0:
+            return f"Hata kodu {result.returncode}:\n{error or '(No stderr)'}"
+        return output or "(Hiçbir çıktı yok)"
+    except Exception as e:
+        return f"Beklenmeyen hata: {str(e)}"
 
 def komutcalistir(update, context):
     text = update.message.text
