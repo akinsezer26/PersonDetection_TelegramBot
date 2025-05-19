@@ -9,17 +9,19 @@ import urllib
 import subprocess
 import signal
 import psutil
-import datetime;
+import datetime
+from telegram_token import CHAT_ID
 
-ChatID = #enter here
+ChatID = CHAT_ID
 g_updater = None
 
 def connection_watcher(bot, updater):
     global g_updater
     while True:
+        time.sleep(300)
         try:
             if not updater.running:
-                bot.send_message(chat_id=ChatID, text="⚠️ Bağlantı koptu. Bot yeniden başlatılıyor...")
+                bot.send_message(chat_id=ChatID, text="Baglanti koptu. Bot yeniden baslatiliyor...")
 
                 updater.stop()
                 time.sleep(5)
@@ -29,11 +31,10 @@ def connection_watcher(bot, updater):
                 start_telegram_bot(bot, updater)
 
         except Exception as e:
-            try:
-                bot.send_message(chat_id=ChatID, text=f"❗ Watchdog Hatası: {str(e)}")
-            except:
-                pass
-        time.sleep(300)
+            ct = datetime.datetime.now()
+            with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
+                f.write(str(ct) + ": " + str(e) +"\n")
+                f.close()
 
 def terminate_process():
     #g_updater.stop()
@@ -165,8 +166,8 @@ if __name__ == '__main__':
     try:
         bot, updater = start_server()
         g_updater = updater
-        start_telegram_bot(bot, updater)
         threading.Thread(target=connection_watcher, args=(bot, updater), daemon=True).start()
+        start_telegram_bot(bot, updater)
         
     except Exception as e:
         ct = datetime.datetime.now()
