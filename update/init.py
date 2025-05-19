@@ -24,9 +24,9 @@ def check_internet(url = 'https://www.google.com/', timeout=5):
 
 def connection_watcher(bot, updater):
     internet_failed_cnt = 0
-    internet_failed_treshold = 5
+    internet_failed_treshold = 2
     while True:
-        time.sleep(60)
+        time.sleep(15)
         try:
             if check_internet() == False:
                 internet_failed_cnt = internet_failed_cnt + 1
@@ -34,7 +34,7 @@ def connection_watcher(bot, updater):
             elif check_internet() == True:
                 internet_failed_cnt = 0
 
-            if internet_failed_cnt > internet_failed_treshold:
+            if internet_failed_cnt > internet_failed_treshold and check_internet() == True:
                 ct = datetime.datetime.now()
                 with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
                     f.write(str(ct) + "Baglanti kesildi sunucu yeniden baslatiliyor!/n")
