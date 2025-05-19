@@ -33,6 +33,9 @@ def connection_watcher(bot, updater):
                 connection_state = False
 
             if check_internet() and connection_state == False:
+                with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
+                    f.write("Baglanti kesildi sunucu yeniden baslatiliyor!/n")
+                    f.close()
                 subprocess.Popen('systemctl restart guvenlik.service', shell=True)
 
         except Exception as e:
@@ -61,7 +64,7 @@ def update_init(update, context):
         subprocess.Popen('sleep 30 && cp -f /home/akin/guvenlik/init_tmp.py /home/akin/guvenlik/init.py', shell=True)
         subprocess.Popen('sleep 45 && rm -f /home/akin/guvenlik/init.py', shell=True)
         os.system("sudo shutdown -r +1")
-
+        exit()
         #terminate_process()
 
     except Exception as error:
