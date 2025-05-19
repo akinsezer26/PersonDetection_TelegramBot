@@ -23,18 +23,23 @@ def check_internet(url = 'https://www.google.com/', timeout=5):
         return False
 
 def connection_watcher(bot, updater):
-    connection_state = True
+    internet_failed_cnt = 0
+    internet_failed_treshold = 5
     while True:
         time.sleep(60)
         try:
-            if not updater.running:
-                connection_state = False
+            if check_internet() == False:
+                internet_failed_cnt = internet_failed_cnt + 1
 
-            if check_internet() and connection_state == False:
+            elif check_internet() == True:
+                internet_failed_cnt = 0
+
+            if internet_failed_cnt > internet_failed_treshold:
+                ct = datetime.datetime.now()
                 with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
-                    f.write("Baglanti kesildi sunucu yeniden baslatiliyor!/n")
+                    f.write(str(ct) + "Baglanti kesildi sunucu yeniden baslatiliyor!/n")
                     f.close()
-                subprocess.Popen('systemctl restart guvenlik.service', shell=True)
+                subprocess.Popen('sudo systemctl restart guvenlik.service', shell=True)
 
         except Exception as e:
             ct = datetime.datetime.now()
