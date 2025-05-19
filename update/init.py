@@ -62,7 +62,7 @@ def update_init(update, context):
         context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde tekrar başlatılacaktır")
 
         subprocess.Popen('sleep 30 && cp -f /home/akin/guvenlik/init_tmp.py /home/akin/guvenlik/init.py', shell=True)
-        subprocess.Popen('sleep 45 && rm -f /home/akin/guvenlik/init.py', shell=True)
+        subprocess.Popen('sleep 45 && rm -f /home/akin/guvenlik/init_tmp.py', shell=True)
         os.system("sudo shutdown -r +1")
         exit()
         #terminate_process()
