@@ -14,8 +14,6 @@ from telegram_token import CHAT_ID
 
 ChatID = CHAT_ID
 g_updater = None
-connection_state = True
-internet_state = True
 
 def check_internet(url = 'https://www.google.com/', timeout=5):
     try:
@@ -25,7 +23,7 @@ def check_internet(url = 'https://www.google.com/', timeout=5):
         return False
 
 def connection_watcher(bot, updater):
-    global g_updater
+    connection_state = True
     while True:
         time.sleep(60)
         try:
