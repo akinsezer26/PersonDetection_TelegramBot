@@ -168,7 +168,7 @@ def start_telegram_bot(bot, updater):
 
     except Exception as error:
         bot.send_message(chat_id=ChatID,text=str(error))
-        updater.start_polling()
+        updater.start_polling(timeout=90)
 
 if __name__ == '__main__':
     try:
