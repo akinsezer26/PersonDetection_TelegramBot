@@ -31,9 +31,6 @@ def connection_watcher(bot, updater):
             if check_internet() == False:
                 internet_failed_cnt = internet_failed_cnt + 1
 
-            elif check_internet() == True:
-                internet_failed_cnt = 0
-
             if internet_failed_cnt > internet_failed_treshold and check_internet() == True:
                 ct = datetime.datetime.now()
                 with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
