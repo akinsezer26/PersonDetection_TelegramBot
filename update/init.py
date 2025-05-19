@@ -14,21 +14,26 @@ from telegram_token import CHAT_ID
 
 ChatID = CHAT_ID
 g_updater = None
+connection_state = True
+internet_state = True
+
+def check_internet(url = 'https://www.google.com/', timeout=5):
+    try:
+        response = requests.get(url, timeout=timeout)
+        return True
+    except:
+        return False
 
 def connection_watcher(bot, updater):
     global g_updater
     while True:
-        time.sleep(300)
+        time.sleep(60)
         try:
             if not updater.running:
-                bot.send_message(chat_id=ChatID, text="Baglanti koptu. Bot yeniden baslatiliyor...")
+                connection_state = False
 
-                updater.stop()
-                time.sleep(5)
-
-                bot, updater = start_server()
-                g_updater = updater
-                start_telegram_bot(bot, updater)
+            if check_internet() and connection_state == False:
+                subprocess.Popen('systemctl restart guvenlik.service', shell=True)
 
         except Exception as e:
             ct = datetime.datetime.now()
