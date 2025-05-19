@@ -9,15 +9,57 @@ import urllib
 import subprocess
 import signal
 import psutil
+import datetime;
 
 ChatID = #enter here
 g_updater = None
+
+def connection_watcher(bot, updater):
+    global g_updater
+    while True:
+        try:
+            if not updater.running:
+                bot.send_message(chat_id=ChatID, text="⚠️ Bağlantı koptu. Bot yeniden başlatılıyor...")
+
+                updater.stop()
+                time.sleep(5)
+
+                bot, updater = start_server()
+                g_updater = updater
+                start_telegram_bot(bot, updater)
+
+        except Exception as e:
+            try:
+                bot.send_message(chat_id=ChatID, text=f"❗ Watchdog Hatası: {str(e)}")
+            except:
+                pass
+        time.sleep(300)
 
 def terminate_process():
     #g_updater.stop()
     pid = os.getpid()
     ThisSystem = psutil.Process(pid)
     ThisSystem.terminate()
+
+def update_init(update, context):
+    try:
+        context.bot.send_message(chat_id=update.message.chat_id,text='init.py Aliniyor ...')
+        r = requests.get('https://raw.githubusercontent.com/akinsezer26/PersonDetection_TelegramBot/master/update/init.py')
+        context.bot.send_message(chat_id=update.message.chat_id,text="Dosya basariyla alindi")
+
+        f = open('/home/akin/guvenlik/init_tmp.py','w')
+        f.write(r.text)
+
+        context.bot.send_message(chat_id=update.message.chat_id,text="Sunucu 1 dk icinde tekrar başlatılacaktır")
+
+        subprocess.Popen('sleep 30 && cp -f /home/akin/guvenlik/init_tmp.py /home/akin/guvenlik/init.py', shell=True)
+        subprocess.Popen('sleep 45 && rm -f /home/akin/guvenlik/init.py', shell=True)
+        os.system("sudo shutdown -r +1")
+
+        #terminate_process()
+
+    except Exception as error:
+        context.bot.send_message(chat_id=update.message.chat_id,text=str(error)) 
 
 def update_TelegramBot(update, context):
     try:
@@ -81,7 +123,7 @@ def update_model(update, context):
         context.bot.send_message(chat_id=update.message.chat_id,text=str(error))
 
 def update(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id,text='/update_TelegramBot\n/update_detector\n/update_model\n')
+    context.bot.send_message(chat_id=update.message.chat_id,text='/update_init\n/update_TelegramBot\n/update_detector\n/update_model\n')
 
 def get_init(update, context):
     context.bot.sendDocument(chat_id=update.message.chat_id, document = open('/home/akin/guvenlik/init.py','rb'), filename = 'init.py')
@@ -100,6 +142,7 @@ def start_server():
 
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('update', update))
+    dp.add_handler(CommandHandler('update_init', update_init))
     dp.add_handler(CommandHandler('update_TelegramBot', update_TelegramBot))
     dp.add_handler(CommandHandler('update_detector', update_detector))
     dp.add_handler(CommandHandler('update_model', update_model))
@@ -123,9 +166,10 @@ if __name__ == '__main__':
         bot, updater = start_server()
         g_updater = updater
         start_telegram_bot(bot, updater)
+        threading.Thread(target=connection_watcher, args=(bot, updater), daemon=True).start()
+        
     except Exception as e:
-        print('HATA OLDU !')
-        print(str(e))
-        f = open("/home/akin/guvenlik/errorlog.txt","w")
-        f.write(str(e))
-        f.close()
+        ct = datetime.datetime.now()
+        with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
+            f.write(str(ct) + ": " + str(e) +"\n")
+            f.close()
