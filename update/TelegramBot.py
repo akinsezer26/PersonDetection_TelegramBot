@@ -243,7 +243,7 @@ def server(bot, updater, ChatID):
     dp.add_handler(CommandHandler('get_error_log',getErrorLog))
     dp.add_handler(CommandHandler('komutcalistir',komutcalistir))
     
-    updater.start_polling()
+    updater.start_polling(timeout=90)
 
     loop(bot, ChatID)
 
