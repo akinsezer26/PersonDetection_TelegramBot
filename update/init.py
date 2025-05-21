@@ -28,7 +28,7 @@ def connection_watcher(bot, updater):
     while True:
         time.sleep(15)
         try:
-            if check_internet() == False:
+            if check_internet() == False or not updater.dispatcher.running or not updater.running:
                 internet_failed_cnt = internet_failed_cnt + 1
 
             if internet_failed_cnt > internet_failed_treshold and check_internet() == True:
