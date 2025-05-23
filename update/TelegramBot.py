@@ -320,6 +320,13 @@ def dailyReport(bot, chat_id):
     elif(now.hour != 12 and now.minute != 30 and daily_report_flag == 1):
         daily_report_flag = 0
 
+def check_internet(url='https://www.google.com/', timeout=5):
+    try:
+        response = requests.get(url,timeout)
+        return True
+    except:
+        return False
+
 def loop(bot, ChatID):
     ch = yoloHandler(0)
     time.sleep(5)
@@ -337,7 +344,8 @@ def loop(bot, ChatID):
     while(True):
 
         try:
-            if not global_updater._running:
+            print('global_updater._running: ' + str(global_updater._running) + '    internet: ' +str(check_internet()))
+            if not global_updater._running and check_internet():
                 global_updater.stop()
                 global_updater.start_polling()
         except:
