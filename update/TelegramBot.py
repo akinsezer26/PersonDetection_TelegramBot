@@ -15,6 +15,26 @@ import RPi.GPIO as GPIO
 import subprocess
 import shlex
 
+class ThreadManager:
+    def __init__(self, updater):
+        self.thread = None
+        self.updater = updater
+
+    def start_thread(self):
+        if self.thread is None or not self.thread.is_alive():
+            self.thread = threading.Thread(target=self.worker)
+            self.thread.start()
+            print("Thread started.")
+        else:
+            print("Thread is already running.")
+
+    def worker(self):
+        self.updater.start_polling()
+        self.updater.idle()  # Optional, keeps thread alive until shutdown
+
+    def is_thread_alive(self):
+        return self.thread.is_alive() if self.thread else False
+
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.datetime.now()
@@ -242,12 +262,10 @@ def server(bot, updater, ChatID):
     dp.add_handler(CommandHandler('alarmkapat',alarmkapat))
     dp.add_handler(CommandHandler('get_error_log',getErrorLog))
     dp.add_handler(CommandHandler('komutcalistir',komutcalistir))
-    
-    updater.start_polling(timeout=90)
 
-    loop(bot, ChatID)
-
-    updater.idle()
+    telegram_manager = ThreadManager(updater)
+    telegram_manager.start_thread()
+    loop(bot, ChatID, telegram_manager)
 
 detectCount = 0
 totalError = 0
@@ -327,7 +345,7 @@ def check_internet(url='https://www.google.com/', timeout=5):
     except:
         return False
 
-def loop(bot, ChatID):
+def loop(bot, ChatID, telegram_manager):
     ch = yoloHandler(0)
     time.sleep(5)
     global lis
@@ -344,12 +362,11 @@ def loop(bot, ChatID):
     while(True):
 
         try:
-            print('global_updater._running: ' + str(global_updater._running) + '    internet: ' +str(check_internet()))
-            if not global_updater._running and check_internet():
-                global_updater.stop()
-                global_updater.start_polling()
-        except:
-            pass
+            if not telegram_manager.is_thread_alive() and check_internet():
+                print('Baglanti problemi! Thread tekrar baslatiliyor!')
+                telegram_manager.start_thread()
+        except Exception as e:
+            print(str(e))
         
         dt = datetime.datetime.now()
         dtH = dt.hour
