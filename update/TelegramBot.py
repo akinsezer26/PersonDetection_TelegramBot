@@ -15,26 +15,6 @@ import RPi.GPIO as GPIO
 import subprocess
 import shlex
 
-class ThreadManager:
-    def __init__(self, updater):
-        self.thread = None
-        self.updater = updater
-
-    def start_thread(self):
-        if self.thread is None or not self.thread.is_alive():
-            self.thread = threading.Thread(target=self.worker)
-            self.thread.start()
-            print("Thread started.")
-        else:
-            print("Thread is already running.")
-
-    def worker(self):
-        self.updater.start_polling()
-        self.updater.idle()  # Optional, keeps thread alive until shutdown
-
-    def is_thread_alive(self):
-        return self.thread.is_alive() if self.thread else False
-
 delay = 3.0
 isCalis = False
 ServerStartDate = datetime.datetime.now()
@@ -233,6 +213,9 @@ def manual(update, context):
     str = "delay    : Görüntü gönderme aralığı\ninterval : tespit etme aralığı"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
+def error_handler(update, context):
+    os.system("sudo systemctl restart guvenlik.service")
+
 def server(bot, updater, ChatID):
 
     global_updater = updater
@@ -262,10 +245,13 @@ def server(bot, updater, ChatID):
     dp.add_handler(CommandHandler('alarmkapat',alarmkapat))
     dp.add_handler(CommandHandler('get_error_log',getErrorLog))
     dp.add_handler(CommandHandler('komutcalistir',komutcalistir))
+    dp.add_error_handler(error_handler)
+    
+    updater.start_polling(timeout=90)
 
-    telegram_manager = ThreadManager(updater)
-    telegram_manager.start_thread()
-    loop(bot, ChatID, telegram_manager)
+    loop(bot, ChatID)
+
+    updater.idle()
 
 detectCount = 0
 totalError = 0
@@ -338,14 +324,7 @@ def dailyReport(bot, chat_id):
     elif(now.hour != 12 and now.minute != 30 and daily_report_flag == 1):
         daily_report_flag = 0
 
-def check_internet(url='https://www.google.com/', timeout=5):
-    try:
-        response = requests.get(url,timeout)
-        return True
-    except:
-        return False
-
-def loop(bot, ChatID, telegram_manager):
+def loop(bot, ChatID):
     ch = yoloHandler(0)
     time.sleep(5)
     global lis
@@ -360,14 +339,6 @@ def loop(bot, ChatID, telegram_manager):
     personCount = 0
     personSum = 0.0
     while(True):
-
-        try:
-            if not telegram_manager.is_thread_alive() and check_internet():
-                print('Baglanti problemi! Thread tekrar baslatiliyor!')
-                telegram_manager.start_thread()
-        except Exception as e:
-            print(str(e))
-        
         dt = datetime.datetime.now()
         dtH = dt.hour
         dtM = dt.minute
