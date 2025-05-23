@@ -335,6 +335,14 @@ def loop(bot, ChatID):
     personCount = 0
     personSum = 0.0
     while(True):
+
+        try:
+            if not global_updater._running:
+                global_updater.stop()
+                global_updater.start_polling()
+            except:
+                pass
+        
         dt = datetime.datetime.now()
         dtH = dt.hour
         dtM = dt.minute
