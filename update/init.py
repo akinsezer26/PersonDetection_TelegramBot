@@ -15,35 +15,6 @@ from telegram_token import CHAT_ID
 ChatID = CHAT_ID
 g_updater = None
 
-def check_internet(url = 'https://www.google.com/', timeout=5):
-    try:
-        response = requests.get(url, timeout=timeout)
-        return True
-    except:
-        return False
-
-def connection_watcher(bot, updater):
-    internet_failed_cnt = 0
-    internet_failed_treshold = 2
-    while True:
-        time.sleep(15)
-        try:
-            if check_internet() == False or not updater.dispatcher.running or not updater.running:
-                internet_failed_cnt = internet_failed_cnt + 1
-
-            if internet_failed_cnt > internet_failed_treshold and check_internet() == True:
-                ct = datetime.datetime.now()
-                with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
-                    f.write(str(ct) + "Baglanti kesildi sunucu yeniden baslatiliyor!/n")
-                    f.close()
-                subprocess.Popen('sudo systemctl restart guvenlik.service', shell=True)
-
-        except Exception as e:
-            ct = datetime.datetime.now()
-            with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
-                f.write(str(ct) + ": " + str(e) +"\n")
-                f.close()
-
 def terminate_process():
     #g_updater.stop()
     pid = os.getpid()
@@ -174,7 +145,6 @@ if __name__ == '__main__':
     try:
         bot, updater = start_server()
         g_updater = updater
-        threading.Thread(target=connection_watcher, args=(bot, updater), daemon=True).start()
         start_telegram_bot(bot, updater)
         
     except Exception as e:
