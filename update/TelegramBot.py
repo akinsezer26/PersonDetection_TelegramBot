@@ -340,8 +340,8 @@ def loop(bot, ChatID):
             if not global_updater._running:
                 global_updater.stop()
                 global_updater.start_polling()
-            except:
-                pass
+        except:
+            pass
         
         dt = datetime.datetime.now()
         dtH = dt.hour
