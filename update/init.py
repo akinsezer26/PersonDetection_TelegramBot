@@ -114,6 +114,13 @@ def get_Telegram_Bot(update, context):
 def get_detector(update, context):
     context.bot.sendDocument(chat_id=update.message.chat_id, document = open('/home/akin/guvenlik/detector.py','rb'), filename = 'detector.py')
 
+def is_connected(timeout=3):
+    try:
+        requests.get("https://www.google.com", timeout=timeout)
+        return True
+    except requests.RequestException:
+        return False
+
 def start_server():
     bot = telegram.Bot('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ')
     updater = Updater('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ',use_context=True)
