@@ -213,8 +213,20 @@ def manual(update, context):
     str = "delay    : Görüntü gönderme aralığı\ninterval : tespit etme aralığı"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
+def is_connected(timeout=3):
+    try:
+        requests.get("https://www.google.com", timeout=timeout)
+        return True
+    except requests.RequestException:
+        return False
+
 def error_handler(update, context):
-    os.system("sudo systemctl restart guvenlik.service")
+    while True:
+        if(is_connected()):
+            os.system("sudo systemctl restart guvenlik.service")
+        else:
+            pass
+        time.sleep(60)
 
 def server(bot, updater, ChatID):
 
