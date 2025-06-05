@@ -152,3 +152,10 @@ if __name__ == '__main__':
         with open("/home/akin/guvenlik/errorlog.txt", "a") as f:
             f.write(str(ct) + ": " + str(e) +"\n")
             f.close()
+
+        while True:
+            if(is_connected()):
+                os.system("sudo systemctl restart guvenlik.service")
+            else:
+                pass
+            time.sleep(60)
