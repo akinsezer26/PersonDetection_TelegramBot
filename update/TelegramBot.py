@@ -14,6 +14,7 @@ import datetime
 import RPi.GPIO as GPIO
 import subprocess
 import shlex
+import requests
 
 delay = 3.0
 isCalis = False
