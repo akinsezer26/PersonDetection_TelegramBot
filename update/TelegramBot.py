@@ -15,6 +15,10 @@ import RPi.GPIO as GPIO
 import subprocess
 import shlex
 import requests
+from telegram_token import CHAT_ID
+from init import update, update_init, update_TelegramBot, update_detector, update_model, get_init, get_Telegram_Bot, get_detector
+
+ChatID = CHAT_ID
 
 delay = 3.0
 isCalis = False
@@ -221,10 +225,53 @@ def is_connected(timeout=3):
     except requests.RequestException:
         return False
 
+def start_polling_thread():
+    bot = telegram.Bot('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ')
+    updater = Updater('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ',use_context=True)
+
+    bot.send_message(chat_id=ChatID,text="Telegram Baglantisi Koptu Sunucu Tekrar Baslatildi")
+
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler('update', update))
+    dp.add_handler(CommandHandler('update_init', update_init))
+    dp.add_handler(CommandHandler('update_TelegramBot', update_TelegramBot))
+    dp.add_handler(CommandHandler('update_detector', update_detector))
+    dp.add_handler(CommandHandler('update_model', update_model))
+    dp.add_handler(CommandHandler('get_init', get_init))
+    dp.add_handler(CommandHandler('get_Telegram_Bot', get_Telegram_Bot))
+    dp.add_handler(CommandHandler('get_detector', get_detector))
+    dp.add_handler(CommandHandler('sunucu_zamani', getServerTime))
+    dp.add_handler(CommandHandler('calis', calis))
+    dp.add_handler(CommandHandler('calisma', calisma))
+    dp.add_handler(CommandHandler('calisma_durumu', getCalis))
+    dp.add_handler(CommandHandler('yardim', yardim))
+    dp.add_handler(CommandHandler('gelismis', developer))
+    dp.add_handler(CommandHandler('set_delay', setDelay))
+    dp.add_handler(CommandHandler('set_interval', setInterval))
+    dp.add_handler(CommandHandler('get_delay', getDelay))
+    dp.add_handler(CommandHandler('get_interval', getInterval))
+    dp.add_handler(CommandHandler('sicaklik', getTemp))
+    dp.add_handler(CommandHandler('kapat',shutdown))
+    dp.add_handler(CommandHandler('yeniden_baslat',restart))
+    dp.add_handler(CommandHandler('manual',manual))
+    dp.add_handler(CommandHandler('rapor',report))
+    dp.add_handler(CommandHandler('duzenli_calismayi_ayarla',setDc))
+    dp.add_handler(CommandHandler('duzenli_calis',Dc))
+    dp.add_handler(CommandHandler('duzenli_calisma',Dcn))
+    dp.add_handler(CommandHandler('versiyon',version))
+    dp.add_handler(CommandHandler('alarmac',alarmac))
+    dp.add_handler(CommandHandler('alarmkapat',alarmkapat))
+    dp.add_handler(CommandHandler('get_error_log',getErrorLog))
+    dp.add_handler(CommandHandler('komutcalistir',komutcalistir))
+
+    updater.start_polling(timeout=90)
+
 def error_handler(update, context):
     while True:
         if(is_connected()):
-            os.system("sudo systemctl restart guvenlik.service")
+            thread = threading.Thread(target=start_polling_thread)
+            thread.start()
+            break
         else:
             pass
         time.sleep(60)
@@ -263,8 +310,6 @@ def server(bot, updater, ChatID):
     updater.start_polling(timeout=90)
 
     loop(bot, ChatID)
-
-    updater.idle()
 
 detectCount = 0
 totalError = 0
