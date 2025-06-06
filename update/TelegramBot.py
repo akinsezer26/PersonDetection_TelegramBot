@@ -236,7 +236,7 @@ def start_polling_thread():
     updater = Updater('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ',use_context=True)
     global_updater = updater
 
-    global_bot.send_message(chat_id=ChatID,text="Telegram Baglantisi Koptu Sunucu Tekrar Baslatildi")
+    #global_bot.send_message(chat_id=ChatID,text="Telegram Baglantisi Koptu Sunucu Tekrar Baslatildi")
 
     dp = global_updater.dispatcher
     dp.add_handler(CommandHandler('update', update))
@@ -276,7 +276,7 @@ def start_polling_thread():
 def error_handler(update, context):
     global global_bot
     while True:
-        global_bot.send_message(chat_id=ChatID,text="HATA")
+        #global_bot.send_message(chat_id=ChatID,text="HATA")
         if(is_connected()):
             thread = threading.Thread(target=start_polling_thread)
             thread.start()
