@@ -230,7 +230,9 @@ def is_connected(timeout=3):
 def start_polling_thread():
     global global_bot
     global global_updater
-
+    
+    global_updater.stop()
+    
     updater = Updater('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ',use_context=True)
     global_updater = updater
 
