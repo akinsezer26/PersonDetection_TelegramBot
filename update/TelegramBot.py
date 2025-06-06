@@ -29,6 +29,8 @@ dcStartH = 0
 dcStartM = 0
 dcEndH = 0
 dcEndM = 0
+global_bot = None
+global_updater = None
 
 GPIO.setmode(GPIO.BCM)
 alarm = 18
@@ -226,45 +228,45 @@ def is_connected(timeout=3):
         return False
 
 def start_polling_thread():
-    bot = telegram.Bot('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ')
-    updater = Updater('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ',use_context=True)
+    global global_bot
+    global global_updater
 
-    bot.send_message(chat_id=ChatID,text="Telegram Baglantisi Koptu Sunucu Tekrar Baslatildi")
+    global_bot.send_message(chat_id=ChatID,text="Telegram Baglantisi Koptu Sunucu Tekrar Baslatildi")
 
-    dp = updater.dispatcher
-    dp.add_handler(CommandHandler('update', update))
-    dp.add_handler(CommandHandler('update_init', update_init))
-    dp.add_handler(CommandHandler('update_TelegramBot', update_TelegramBot))
-    dp.add_handler(CommandHandler('update_detector', update_detector))
-    dp.add_handler(CommandHandler('update_model', update_model))
-    dp.add_handler(CommandHandler('get_init', get_init))
-    dp.add_handler(CommandHandler('get_Telegram_Bot', get_Telegram_Bot))
-    dp.add_handler(CommandHandler('get_detector', get_detector))
-    dp.add_handler(CommandHandler('sunucu_zamani', getServerTime))
-    dp.add_handler(CommandHandler('calis', calis))
-    dp.add_handler(CommandHandler('calisma', calisma))
-    dp.add_handler(CommandHandler('calisma_durumu', getCalis))
-    dp.add_handler(CommandHandler('yardim', yardim))
-    dp.add_handler(CommandHandler('gelismis', developer))
-    dp.add_handler(CommandHandler('set_delay', setDelay))
-    dp.add_handler(CommandHandler('set_interval', setInterval))
-    dp.add_handler(CommandHandler('get_delay', getDelay))
-    dp.add_handler(CommandHandler('get_interval', getInterval))
-    dp.add_handler(CommandHandler('sicaklik', getTemp))
-    dp.add_handler(CommandHandler('kapat',shutdown))
-    dp.add_handler(CommandHandler('yeniden_baslat',restart))
-    dp.add_handler(CommandHandler('manual',manual))
-    dp.add_handler(CommandHandler('rapor',report))
-    dp.add_handler(CommandHandler('duzenli_calismayi_ayarla',setDc))
-    dp.add_handler(CommandHandler('duzenli_calis',Dc))
-    dp.add_handler(CommandHandler('duzenli_calisma',Dcn))
-    dp.add_handler(CommandHandler('versiyon',version))
-    dp.add_handler(CommandHandler('alarmac',alarmac))
-    dp.add_handler(CommandHandler('alarmkapat',alarmkapat))
-    dp.add_handler(CommandHandler('get_error_log',getErrorLog))
-    dp.add_handler(CommandHandler('komutcalistir',komutcalistir))
+    # dp = global_updater.dispatcher
+    # dp.add_handler(CommandHandler('update', update))
+    # dp.add_handler(CommandHandler('update_init', update_init))
+    # dp.add_handler(CommandHandler('update_TelegramBot', update_TelegramBot))
+    # dp.add_handler(CommandHandler('update_detector', update_detector))
+    # dp.add_handler(CommandHandler('update_model', update_model))
+    # dp.add_handler(CommandHandler('get_init', get_init))
+    # dp.add_handler(CommandHandler('get_Telegram_Bot', get_Telegram_Bot))
+    # dp.add_handler(CommandHandler('get_detector', get_detector))
+    # dp.add_handler(CommandHandler('sunucu_zamani', getServerTime))
+    # dp.add_handler(CommandHandler('calis', calis))
+    # dp.add_handler(CommandHandler('calisma', calisma))
+    # dp.add_handler(CommandHandler('calisma_durumu', getCalis))
+    # dp.add_handler(CommandHandler('yardim', yardim))
+    # dp.add_handler(CommandHandler('gelismis', developer))
+    # dp.add_handler(CommandHandler('set_delay', setDelay))
+    # dp.add_handler(CommandHandler('set_interval', setInterval))
+    # dp.add_handler(CommandHandler('get_delay', getDelay))
+    # dp.add_handler(CommandHandler('get_interval', getInterval))
+    # dp.add_handler(CommandHandler('sicaklik', getTemp))
+    # dp.add_handler(CommandHandler('kapat',shutdown))
+    # dp.add_handler(CommandHandler('yeniden_baslat',restart))
+    # dp.add_handler(CommandHandler('manual',manual))
+    # dp.add_handler(CommandHandler('rapor',report))
+    # dp.add_handler(CommandHandler('duzenli_calismayi_ayarla',setDc))
+    # dp.add_handler(CommandHandler('duzenli_calis',Dc))
+    # dp.add_handler(CommandHandler('duzenli_calisma',Dcn))
+    # dp.add_handler(CommandHandler('versiyon',version))
+    # dp.add_handler(CommandHandler('alarmac',alarmac))
+    # dp.add_handler(CommandHandler('alarmkapat',alarmkapat))
+    # dp.add_handler(CommandHandler('get_error_log',getErrorLog))
+    # dp.add_handler(CommandHandler('komutcalistir',komutcalistir))
 
-    updater.start_polling(timeout=90)
+    global_updater.start_polling(timeout=90)
 
 def error_handler(update, context):
     while True:
@@ -277,9 +279,11 @@ def error_handler(update, context):
         time.sleep(60)
 
 def server(bot, updater, ChatID):
+    global global_bot
+    global global_updater
 
     global_updater = updater
-
+    global_bot = bot
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler('sunucu_zamani', getServerTime))
