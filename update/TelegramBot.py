@@ -434,7 +434,10 @@ def loop(bot, ChatID):
         dtH = dt.hour
         dtM = dt.minute
 
-        dailyReport(bot, ChatID)
+        try:
+            dailyReport(bot, ChatID)
+        except:
+            pass
 
         start = datetime.time(int(dcStartH), int(dcStartM), 0)
         end = datetime.time(int(dcEndH), int(dcEndM), 0)
@@ -449,7 +452,6 @@ def loop(bot, ChatID):
             if(cnt == 25):
                 cnt = 0
             lis[cnt] = output
-            #print(str(lis[cnt])+"\n")
 
             if(output == "Resim Siyah"):
                 totalBlackScreen+=1
@@ -476,7 +478,11 @@ def loop(bot, ChatID):
                 pilImage.save(bio, 'JPEG')
                 bio.seek(0)
 
-                bot.send_photo(chat_id=ChatID, photo=bio, caption="Insan : %" + str(currentProb*100)[:4])
+                try:
+                    bot.send_photo(chat_id=ChatID, photo=bio, caption="Insan : %" + str(currentProb*100)[:4])
+                except:
+                    pass
+                    
                 time.sleep(float(delay))
         else:
             time.sleep(1)
