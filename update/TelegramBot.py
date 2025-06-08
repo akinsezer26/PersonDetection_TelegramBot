@@ -229,7 +229,6 @@ def is_connected(timeout=3):
     except requests.RequestException:
         return False
 
-
 def start_polling_thread():
     global global_bot, global_updater, is_polling
     
@@ -284,7 +283,8 @@ def start_polling_thread():
             dp.add_handler(CommandHandler('komutcalistir', komutcalistir))
             dp.add_error_handler(error_handler)
 
-            updater.start_polling(timeout=30, drop_pending_updates=True)
+            updater.start_polling(timeout=30)
+
         except Exception as e:
             is_polling = False
             time.sleep(60)
@@ -299,10 +299,16 @@ def error_handler(update, context):
     if is_connected():
         thread = threading.Thread(target=start_polling_thread)
         thread.start()
+        
     else:
-        time.sleep(60)
-        thread = threading.Thread(target=start_polling_thread)
-        thread.start()
+        while(True):
+            time.sleep(60)
+            if(is_connected()):
+                thread = threading.Thread(target=start_polling_thread)
+                thread.start()
+                break
+            else:
+                pass
 
 def server(bot, updater, ChatID):
     global global_bot, global_updater
