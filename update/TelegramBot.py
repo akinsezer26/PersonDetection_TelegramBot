@@ -17,6 +17,7 @@ import shlex
 import requests
 from telegram_token import CHAT_ID
 from init import update, update_init, update_TelegramBot, update_detector, update_model, get_init, get_Telegram_Bot, get_detector
+import backoff
 
 ChatID = CHAT_ID
 
@@ -33,6 +34,8 @@ global_bot = None
 global_updater = None
 polling_lock = threading.Lock()
 is_polling = False
+retry_thread = None
+retry_count = 0
 
 GPIO.setmode(GPIO.BCM)
 alarm = 18
@@ -224,13 +227,39 @@ def manual(update, context):
 
 def is_connected(timeout=3):
     try:
-        requests.get("https://www.google.com", timeout=timeout)
+        requests.get("https://api.telegram.org", timeout=timeout)
         return True
     except requests.RequestException:
         return False
 
+@backoff.on_predicate(backoff.expo, lambda x: not x, max_tries=10, max_time=3600)
+def wait_for_connection():
+    """Wait for internet connection with exponential backoff, up to 1 hour."""
+    return is_connected()
+
+def retry_polling():
+    """Handle reconnection with backoff strategy and long-term retries."""
+    global is_polling, retry_thread, retry_count
+
+    if wait_for_connection():
+        retry_count = 0
+        start_polling_thread()
+    else:
+        with polling_lock:
+            is_polling = False
+            retry_thread = None
+        # Increase delay for subsequent retry cycles based on retry count
+        delay = min(900 * (2 ** min(retry_count, 5)), 3600)  # Cap at 1 hour
+        retry_count += 1
+        time.sleep(delay)
+        with polling_lock:
+            if not is_polling and (retry_thread is None or not retry_thread.is_alive()):
+                retry_thread = threading.Thread(target=retry_polling)
+                retry_thread.start()
+
+
 def start_polling_thread():
-    global global_bot, global_updater, is_polling
+    global global_bot, global_updater, is_polling, retry_thread, retry_count
     
     with polling_lock:
         if is_polling:
@@ -240,9 +269,10 @@ def start_polling_thread():
         if global_updater is not None:
             try:
                 global_updater.stop()
-                global_updater = None
-            except:
+            except Exception as e:
                 pass
+            finally:
+                global_updater = None
 
         try:
             updater = Updater('1330874191:AAFdhp7SHM3T21umc6zz4ZdWI34iWlh_7fQ', use_context=True)
@@ -283,32 +313,25 @@ def start_polling_thread():
             dp.add_handler(CommandHandler('komutcalistir', komutcalistir))
             dp.add_error_handler(error_handler)
 
-            updater.start_polling(timeout=30)
-
+            updater.start_polling(timeout=30, drop_pending_updates=True)
+            retry_count = 0  # Reset retry count on successful polling
         except Exception as e:
             is_polling = False
-            time.sleep(60)
-            start_polling_thread()
+            with polling_lock:
+                if retry_thread is None or not retry_thread.is_alive():
+                    retry_thread = threading.Thread(target=retry_polling)
+                    retry_thread.start()
 
 def error_handler(update, context):
-    global is_polling
+    global is_polling, retry_thread
     
     with polling_lock:
         is_polling = False
-    
-    if is_connected():
-        thread = threading.Thread(target=start_polling_thread)
-        thread.start()
-        
-    else:
-        while(True):
-            time.sleep(60)
-            if(is_connected()):
-                thread = threading.Thread(target=start_polling_thread)
-                thread.start()
-                break
-            else:
-                pass
+        if retry_thread is None or not retry_thread.is_alive():
+            retry_thread = threading.Thread(target=retry_polling)
+            retry_thread.start()
+        else:
+            pass
 
 def server(bot, updater, ChatID):
     global global_bot, global_updater
