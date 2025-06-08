@@ -137,6 +137,8 @@ def start_server():
     dp.add_handler(CommandHandler('get_Telegram_Bot', get_Telegram_Bot))
     dp.add_handler(CommandHandler('get_detector', get_detector))
 
+    updater.start_polling(timeout = 90)
+
     return bot, updater
 
 def start_telegram_bot(bot, updater):
@@ -146,12 +148,11 @@ def start_telegram_bot(bot, updater):
 
     except Exception as error:
         bot.send_message(chat_id=ChatID,text=str(error))
-        updater.start_polling(timeout=90)
+        updater.idle()
 
 if __name__ == '__main__':
     try:
         bot, updater = start_server()
-        g_updater = updater
         start_telegram_bot(bot, updater)
         
     except Exception as e:
