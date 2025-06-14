@@ -225,6 +225,8 @@ def get_current_cam(update, context):
     global global_bot
     global detectedImage
     try:
+        bot.send_message(chat_id=chat_id, text='Guncel Goruntu Aliniyor...')
+        bot.send_message(chat_id=chat_id, text=str(type(detectedImage)))
         pilImage = Image.fromarray( cv2.cvtColor(detectedImage, cv2.COLOR_BGR2RGB) )
         bio = BytesIO()
         bio.name = 'image.jpeg'
