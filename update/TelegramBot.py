@@ -127,7 +127,7 @@ def getCalis(update, context):
         context.bot.send_message(chat_id=update.message.chat_id,text=str_)
 
 def yardim(update, context):
-    str = "/versiyon\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/duzenli_calis\n"+"/duzenli_calisma\n"+"/duzenli_calismayi_ayarla\n"+"/alarmac\n"+"/alarmkapat\n"+"/gelismis\n"
+    str = "/versiyon\n"+"/sunucu_zamani\n"+"/calis\n"+"/calisma\n"+"/calisma_durumu\n"+"/sicaklik\n"+"/duzenli_calis\n"+"/duzenli_calisma\n"+"/duzenli_calismayi_ayarla\n"+ "/guncel_kamera_goruntusu\n" +"/alarmac\n"+"/alarmkapat\n"+"/gelismis\n"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
 
 def developer(update, context):
@@ -221,6 +221,19 @@ def restart(update, context):
     os.system("sudo shutdown -r +1")
     global_updater.stop()
 
+def get_current_cam(update, context):
+    global global_bot
+    global detectedImage
+    try:
+        pilImage = Image.fromarray( cv2.cvtColor(detectedImage, cv2.COLOR_BGR2RGB) )
+        bio = BytesIO()
+        bio.name = 'image.jpeg'
+        pilImage.save(bio, 'JPEG')
+        bio.seek(0)
+        global_bot.send_photo(chat_id=ChatID, photo=bio, caption="Current Cam")
+    except:
+        pass
+
 def manual(update, context):
     str = "delay    : Görüntü gönderme aralığı\ninterval : tespit etme aralığı"
     context.bot.send_message(chat_id=update.message.chat_id,text=str)
@@ -311,6 +324,7 @@ def start_polling_thread():
             dp.add_handler(CommandHandler('alarmkapat', alarmkapat))
             dp.add_handler(CommandHandler('get_error_log', getErrorLog))
             dp.add_handler(CommandHandler('komutcalistir', komutcalistir))
+            dp.add_handler(CommandHandler('guncel_kamera_goruntusu', get_current_cam))
             dp.add_error_handler(error_handler)
 
             updater.start_polling(timeout=30)
@@ -349,6 +363,7 @@ totalError = 0
 totalBlackScreen = 0
 totalValid = 0
 totalPersonAvg = 0.0
+detectedImage = None
 
 lis = [[] for i in range(25)]
 
@@ -426,6 +441,7 @@ def loop(bot, ChatID):
     global totalValid
     global totalPersonAvg
     global isCalis
+    global detectedImage
 
     personCount = 0
     personSum = 0.0
@@ -470,6 +486,11 @@ def loop(bot, ChatID):
 
             cnt+=1
             detectCount+=1
+
+            try:
+                detectedImage = ch.DetectedImage
+            except:
+                pass
 
             if(result == True):
                 pilImage = Image.fromarray( cv2.cvtColor(ch.DetectedImage, cv2.COLOR_BGR2RGB) )
