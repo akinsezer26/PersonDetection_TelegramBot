@@ -225,14 +225,14 @@ def get_current_cam(update, context):
     global global_bot
     global detectedImage
     try:
-        global_bot.send_message(chat_id=chat_id, text='Guncel Goruntu Aliniyor...')
-        global_bot.send_message(chat_id=chat_id, text=str(type(detectedImage)))
+        global_bot.send_message(chat_id=update.message.chat_id, text='Guncel Goruntu Aliniyor...')
+        global_bot.send_message(chat_id=update.message.chat_id, text=str(type(detectedImage)))
         pilImage = Image.fromarray( cv2.cvtColor(detectedImage, cv2.COLOR_BGR2RGB) )
         bio = BytesIO()
         bio.name = 'image.jpeg'
         pilImage.save(bio, 'JPEG')
         bio.seek(0)
-        global_bot.send_photo(chat_id=ChatID, photo=bio, caption="Current Cam")
+        global_bot.send_photo(chat_id=update.message.chat_id, photo=bio, caption="Current Cam")
     except:
         pass
 
