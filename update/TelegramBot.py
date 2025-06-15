@@ -223,11 +223,11 @@ def restart(update, context):
 
 def get_current_cam(update, context):
     global global_bot
-    global detectedImage
+    global CurrentImage
     try:
         global_bot.send_message(chat_id=update.message.chat_id, text='Guncel Goruntu Aliniyor...')
-        global_bot.send_message(chat_id=update.message.chat_id, text=str(type(detectedImage)))
-        pilImage = Image.fromarray( cv2.cvtColor(detectedImage, cv2.COLOR_BGR2RGB) )
+        global_bot.send_message(chat_id=update.message.chat_id, text=str(type(CurrentImage)))
+        pilImage = Image.fromarray( cv2.cvtColor(CurrentImage, cv2.COLOR_BGR2RGB) )
         bio = BytesIO()
         bio.name = 'image.jpeg'
         pilImage.save(bio, 'JPEG')
@@ -365,7 +365,7 @@ totalError = 0
 totalBlackScreen = 0
 totalValid = 0
 totalPersonAvg = 0.0
-detectedImage = None
+CurrentImage = None
 
 lis = [[] for i in range(25)]
 
@@ -443,7 +443,7 @@ def loop(bot, ChatID):
     global totalValid
     global totalPersonAvg
     global isCalis
-    global detectedImage
+    global CurrentImage
 
     personCount = 0
     personSum = 0.0
@@ -490,7 +490,7 @@ def loop(bot, ChatID):
             detectCount+=1
 
             try:
-                detectedImage = ch.DetectedImage
+                CurrentImage = ch.CurrentImage
             except:
                 pass
 
