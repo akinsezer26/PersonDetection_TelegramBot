@@ -10,6 +10,7 @@ class yoloHandler:
 
     def __init__(self, source):
         self.DetectedImage = None
+        self.CurrentImage = None
         self.cap = cv2.VideoCapture(source)
         self.cap.set(3, 1920)
         self.cap.set(4, 1080)
@@ -27,7 +28,9 @@ class yoloHandler:
             #    self.cap.grab()
 
             ret,image = self.cap.read()
-
+            
+            self.CurrentImage = image
+            
             if(self.currentCam == 0):
                 image = image[0:360, 0:640]
             elif(self.currentCam == 1):
